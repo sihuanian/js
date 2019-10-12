@@ -1,3 +1,5 @@
+import { eventNames } from "cluster"
+
 let str : string = 'abc'
 let bool : boolean = false
 let num : number = 123
@@ -9,8 +11,8 @@ let arr2 : Array<number> = [1, 2, 3]
 // 元组（与[]中的模式相同，不能多也不能少，类型顺序也要一致）
 let tuple : [number, string] = [666, 'sihuanian']
 tuple[0]
-tuple.push(3)
-console.log(tuple)
+tuple.push(3) // 不建议使用
+console.log('tuple', tuple)
 
 // 函数
 let add = (a:number, b:number) => a + b
@@ -96,3 +98,54 @@ union = 888
 // union.length 类型推论
 union = 'union'
 // union.length
+
+// 断言
+function assert(a: number | string):number {
+  if ((a as string).length) {
+    return (<string>a).length
+  } else {
+    return a.toString().length
+  }
+}
+console.log('assert(123)', assert(123))
+console.log('assert(123)', assert('123'))
+
+
+// 类型别名
+type Name = string
+let pName: Name = 'sihuanian'
+type NameResolver = () => string;
+type NameOrResolver = Name | NameResolver;
+function getName(n: NameOrResolver): Name {
+    if (typeof n === 'string') {
+        return n;
+    } else {
+        return n();
+    }
+}
+
+// 字符串字面量  用来约束字符串只能在规定的值中取值
+type EventNames = 'click' | 'mousemove' | 'scroll'
+function handlerEvent(e:Element, eventName: EventNames) {
+  e.addEventListener(eventName, () => {
+    console.log('触发了 ' + eventName + '事件')
+  })
+}
+handlerEvent(document.body, 'mousemove')
+
+// 枚举
+enum Color {Green, Red, Blue} // read-only
+let color: Color = Color.Blue // 2
+let red: string = Color[1] // Red
+console.log('enum', color, red);
+// 手动赋值的枚举项如果不是数字，则需要使用断言让tsc 无视类型检测
+enum coins {top = <any>'正', bottom = 1}
+// 手动赋值可以是小数或负数 步长仍为1
+// 枚举项常数项和计算所得项，计算所得项后的项必须手动赋值
+
+// 常数枚举  不能包括计算项
+const enum Directives { Up, Down, Left, Right} // => ''
+let directives = [Directives.Up, Directives.Down] // => [0, 1]
+
+// 外部枚举
+declare enum Person {Tom, Jerry}
