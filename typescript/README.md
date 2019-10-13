@@ -173,3 +173,21 @@ let p: Person = {
 > enum Direction {Up, Down, Left, Right}
 > const enume Person {}
 > declare enum Color {}
+
+
+## 类
+
+- public 修饰的属性或方法是公有的，可以在任何地方被访问到，默认所有的属性和方法都是 public 的
+- private 修饰的属性或方法是私有的，不能在声明它的类的外部访问
+- protected 修饰的属性或方法是受保护的，它和 private 类似，区别是它在子类中也是允许被访问的
+
+tips：
+1. 使用`private`修饰的属性或方法子类也是不可以访问的
+2. `protected`修饰的属性或方法子类是可以访问的
+3. `private`修饰构造函数时，这个类是不可以被继承和实例化的
+4. `protected`修饰构造函数时，这个类只可以被继承
+5. 访问修饰符可以使用在构造函数的参数中，等同于定义属性
+
+- 只读关键字 `readonly`
+	关键字只允许出现在属性声明和参数签名中
+	关键字与访问修饰符同时存在时，`readonle`要写在修饰符之后
