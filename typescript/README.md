@@ -25,14 +25,14 @@
 1. 可以用`void`表示没有任何返回值的函数
 2. 声明一个`void`类型的变量没有什么用，因为你只能将它赋值为`undefined`和`null`
 
-```javascript
+```TypeScript
 function alertName(): void {
     alert('My name is Tom');
 }
 ```
 
 ### null 和 undefined
-tips: 与`void`的区别是，`undefined`和`null`是所有类型的子类型。也就是说`undefined`类型的变量，可以赋值给`number`类型的变量，而`void`不能赋值给`number`类型的变量。
+tips: 与`void`的区别是，***`undefined`和`null`是所有类型的子类型***。也就是说`undefined`类型的变量，可以赋值给`number`类型的变量，而`void`不能赋值给`number`类型的变量。
 
 
 ## 任意值
@@ -58,7 +58,7 @@ tips: 未声明类型的变量，被默认设定为任意值类型
 tips: 
 1. 当typescript 不确定一个联合类型的变量到底是哪个类型的时候，我们只能访问此联合类型的所有类型里的共有的属性或方法
 
-```javascript
+```TypeScript
 	function getLength(any: string | number): number {
 		return any.length
 	}
@@ -71,7 +71,7 @@ tips:
 ```
 2. 联合类型的变量在被赋值的时候，会根据类型推论的规则推断出一个类型
 
-```javascript
+```TypeScript
 	let age: number | string;
 	age = 17 // age被推断成数值类型可以使用数值类型上的方法
 	console.log(age.length) // Property 'length' does not exist on type 'number'
@@ -81,7 +81,7 @@ tips:
 
 ## 接口
 
-```javascript
+```TypeScript
 interface Person {
 	name: string;
 	age: number;
@@ -95,7 +95,7 @@ let sihuanian: Person = {
 
 ### 可选属性
 
-```javascript
+```TypeScript
 interface Person {
 	name: string;
 	age?: number;
@@ -108,9 +108,9 @@ let sihuanian: Person = {
 ```
 
 ### 任意属性
-一旦定义了任意属性，那么确定属性和可选属性的类型都必须是它的类型的子集
+***一旦定义了任意属性，那么确定属性和可选属性的类型都必须是它的类型的子集***
 
-```javascript
+```TypeScript
 interface Person {
 	name: string;
 	age?: number;
@@ -124,7 +124,7 @@ let s: Person = {
 }
 ```
 ### 只读属性
-```javascript
+```TypeScript
 interface Person {
 	name: string;
 	readonly age: number;
@@ -150,16 +150,48 @@ let p: Person = {
 
 
 ## 函数
+```ts
+// 函数表达式
+let add: (a: number, b: number) => number = function (a: number, b: number): number {
+	return a + b
+}
+```
 1. 函数的重载
+> note: 函数重载优先匹配前面的函数定义，所以精确的定义应该放到前面
+```ts
+function reverse(x: number): number // 只声明
+function reverse(x: string): number
+function reverse(x: number | string): number | string { // 实现
+  if (typeof x === 'number') {
+    return Number.parseInt(x.toString().split('').reverse().join(''))
+  } else {
+    return x.split('').reverse().join('')
+  }
+}
+```
 2. 函数的可选参数
+```ts
+> note: 参数默认值之后不可以有必需的参数（使用参数默认值后失效）
+function add (a: number, b: number, c?: number): number {
+	if (c) {
+		return a + b + c
+	}
+	return a + b
+}
+```
 3. 函数的默认值
 4. 函数的剩余参数
+> 剩余参数只能在参数列表的最后面
 
 ## 断言
 手动指定一个值的类型
 > <类型>值  <number> a
 > 值 as 类型  a as number
 断言成一个联合类型中不存在的值是不允许的
+
+## 声明文件
+> note: 声明文件中不能有具体实现
+1. 声明文件必须以 ***.d.ts*** 为后辍
 
 ## 类型别名
 > type Name = string
@@ -185,15 +217,24 @@ tips：
 1. 使用`private`修饰的属性或方法子类也是不可以访问的
 2. `protected`修饰的属性或方法子类是可以访问的
 3. `private`修饰构造函数时，这个类是不可以被继承和实例化的
-4. `protected`修饰构造函数时，这个类只可以被继承
+4. `protected`修饰构造函数时，这个类只可以被继承，不能被实例化
 5. 访问修饰符可以使用在构造函数的参数中，等同于定义属性
 
 - 只读关键字 `readonly`
 	关键字只允许出现在属性声明和参数签名中
-	关键字与访问修饰符同时存在时，`readonle`要写在修饰符之后
+	关键字与访问修饰符同时存在时，`readonly`要写在修饰符之后
 
 ## 泛型
 > function identity <T> (arg: T): T { return arg }
+1. 泛型约束，可以让泛型extends 一个接口
+```ts
+interface LengthWise {
+	length: number;
+}
+function returnLength <T extends LengthWise>(source: T): number {
+	return source.length
+}
+```
 
 ## 声明合并
 1. 函数合并
